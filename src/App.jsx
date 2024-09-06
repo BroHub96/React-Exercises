@@ -28,7 +28,9 @@ import { FilteredList } from "./FilteredList"
 export function App (){
     return(
     <LanguageProvider>
-        <AppContent />
+        <Router>
+            <AppContent />
+        </Router>
     </LanguageProvider>
     )
 }
@@ -65,6 +67,20 @@ function AppContent(){
 
     return (
         <div>
+            <nav>
+                <Link to="/"> Home </Link>
+                <Link to="/counter"> Counter </Link>
+                <Link to="/users"> Users </Link>
+                <Routes>
+                    <Route path="/" element={<Welcome name = "John" />}/>
+                    <Route path="/counter" element={<Counter initialValue={0} />} />
+                <Route path="/users" element={<GithubUserList />}>
+                    <Route index element={<h2>Add a user and select it</h2>} />
+                    <Route path=":username" element={<ShowGithubUser />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+                </Routes>
+            </nav>
             <Hello />
             <br></br>
                 <div>
