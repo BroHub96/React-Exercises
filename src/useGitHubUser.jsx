@@ -1,8 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
+// import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import useSWR from 'swr';
+
+const fetcher = (url) => axios.get(url).then((res) => res.data)
 
 export function useGithubUser(username){
-  const [user, setUser] = useState(null);
+    const {data, error, username} = useSWR(username ? `https://api.github.com/users/${username}` : null, fetcher)
+
+    return{
+        user: data,
+        error: error ? error.message : null,
+        loading: !data && !error,
+        refetch: mutate,
+    }
+
+  /*const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,5 +38,5 @@ export function useGithubUser(username){
     }
   }, [username, fetchUserData]);
 
-  return { user, error, loading, fetchUserData };
+  return { user, error, loading, fetchUserData }; */
 };

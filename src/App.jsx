@@ -23,7 +23,9 @@ import { CustomHookCounter } from "./CustomHookCounter"
 import { CustomHookGithubUser } from "./CustomHookGitHubUser"
 import { CustomHookCurrentLocation } from "./CustomHookCurrentLocation"
 import { FilteredList } from "./FilteredList"
-
+import useSWR, { SWRConfig } from "swr"
+import { useGithubUser } from "./useGitHubUser"
+import React, {useState} from "react"
 
 export function App (){
     return(
@@ -62,6 +64,12 @@ function AppContent(){
         {name: 'Lisa', age: 16},
         {name: 'Carla', age: 17}
     ]
+
+    const [username, setUsername] = useState('');
+
+    const {user, error, loading, refetch} = useGithubUser(username);
+
+    function handleSearch(){};
 
     return (
         <div>
@@ -167,6 +175,26 @@ function AppContent(){
             <div>
                 <h2>List: </h2>
                 <FilteredList items={data} />
+            </div>
+            <br />
+            <div>
+                <SWRConfig value={{fetcher}}>
+                    <input type="text" 
+                    placeholder="Enter GitHub Username" 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} />
+
+                    <button onClick={handleSearch}> Search </button>
+                    {loading && <p> Loading... </p>}
+                    {error && <p> Error!! </p>}
+                    {user && (
+                        <div>
+                            <h2> {user.name} </h2>
+                            <p> Followers: {user.followers} </p>
+                            <p> Public Repos: {user.public_repos} </p>
+                        </div>
+                    )}
+                </SWRConfig>
             </div>
         </div>
         
